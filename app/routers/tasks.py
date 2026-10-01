@@ -1,38 +1,33 @@
-from app.services.task_service import get_task_service
-from fastapi import Depends
-from fastapi import APIRouter
-from app.services.task_service import TaskService
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, status
+from app.services.task_service import TaskService, get_task_service
+from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
+
 router = APIRouter()
 
-class TaskCreate(BaseModel):
-   title:str
-   status:str
-
-class TaskUpdate(BaseModel):
-   title:str
-   status:str
-   
-@router.get("/api/v1/tasks")
-def get_tasks():
-    return {"message": "Get all tasks"}
+@router.get("/api/v1/tasks", response_model=list[TaskResponse], status_code=status.HTTP_200_OK)
+def get_tasks(service: TaskService = Depends(get_task_service)):
+    return service.get_tasks()
 
 
-@router.get("/api/v1/tasks/{task_id}")
-def get_task(task_id: int,service:TaskService = Depends(get_task_service)):
+@router.get("/api/v1/tasks/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
+def get_task(task_id: int, service: TaskService = Depends(get_task_service)):
     return service.get_task(task_id)
 
-@router.post("/api/v1/tasks")
-def create_task(task_data:TaskCreate,service:TaskService = Depends(get_task_service)):
-   return service.create_task(task_data.title,task_data.status)
 
-@router.patch("/api/v1/tasks/{task_id}")
-def update_task(task_id:int,task_data:TaskUpdate,service:TaskService = Depends(get_task_service)):
-   return service.update_task(task_id,task_data.title,task_data.status)
+@router.post("/api/v1/tasks", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
+def create_task(task_data: TaskCreate, service: TaskService = Depends(get_task_service)):
+    return service.create_task(task_data)
 
-@router.delete("/api/v1/tasks/{task_id}")
-def delete_task(task_id:int,service:TaskService = Depends(get_task_service)):
-   return service.delete_task(task_id)
+
+@router.patch("/api/v1/tasks/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
+def update_task(task_id: int, task_data: TaskUpdate, service: TaskService = Depends(get_task_service)):
+    return service.update_task(task_id, task_data)
+
+
+@router.delete("/api/v1/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_task(task_id: int, service: TaskService = Depends(get_task_service)):
+    service.delete_task(task_id)
+    return None
 
 '''
 Request

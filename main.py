@@ -5,9 +5,25 @@ from app.models.task import Task
 from app.models.user import User
 
 from app.db.database import engine
+from app.exceptions.task import TaskNotFound, TaskForbidden
+from app.handlers.exceptions import (
+    task_not_found_handler,
+    task_forbidden_handler,
+)
 
 Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
+
+app.add_exception_handler(
+    TaskNotFound,
+    task_not_found_handler
+)
+
+app.add_exception_handler(
+    TaskForbidden,
+    task_forbidden_handler
+)
 
 app.include_router(task_router)
 # include_router() is essentially telling FastAPI:These routes belong to this application; register them.

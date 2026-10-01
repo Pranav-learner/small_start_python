@@ -1,54 +1,50 @@
-from anyio import NoEventLoopError
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models.task import Task
+from app.models import Task
 
 class TaskRepository:
 
-    def __init__(self,db:Session):
+    def __init__(self, db: Session):
         self.db = db
 
-    def get_task(self, task_id:int):
-        return self.db.get(Task,task_id)
+    def get_tasks(self) -> list[Task]:
+        return list(self.db.scalars(select(Task)).all())
 
-    def create_task(self,title:str,status:str = "TODO"):
-        task = Task( #It has not necessarily been inserted into PostgreSQL yet.
-            title=title,
-            status=status
-        )
+    def get_task(self, task_id: int) -> Task | None:
+        return self.db.get(Task, task_id)
 
-        self.db.add(task) #It queues the object for insertion
-        self.db.commit()  #It executes the pending SQL INSERT
-        self.db.refresh(task) #It reloads the row from PostgreSQL into the object
+    def create_task(self, data: dict) -> Task:
+        task = Task(**data)
+        self.db.add(task)
+        self.db.commit()
+        self.db.refresh(task)
         return task
-
 
     def update_task(
         self,
-        task_id:int,
-        title:str,
-        status:str
-    ):
-        task = self.db.get(Task,task_id)
+        task_id: int,
+        data: dict
+    ) -> Task | None:
+        task = self.db.get(Task, task_id)
         if task is None:
             return None
         
-        task.title = title
-        task.status = status
+        for field, value in data.items():
+            setattr(task, field, value)
 
         self.db.commit()
         self.db.refresh(task)
         return task
 
-    def delete_task(self,task_id:int):
-        task = self.db.get(Task,task_id)
+    def delete_task(self, task_id: int) -> bool:
+        task = self.db.get(Task, task_id)
         
         if task is None:
             return False
 
         self.db.delete(task)
         self.db.commit()
-        
         return True
 #For Create
 '''
