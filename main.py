@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from app.routers.tasks import router as task_router
 from app.db.base import Base
 from app.models.task import Task
+from app.models.user import User
+
 from app.db.database import engine
 
 Base.metadata.create_all(bind=engine)
@@ -43,17 +45,17 @@ app = FastAPI()
 
 all_tasks = [
     {
-        "task_id" : 1,
+        "task_task_id" : 1,
         "title": "Learn Python",
         "status": "TODO"
     },
     {
-        "task_id" : 2,
+        "task_task_id" : 2,
         "title": "Learn Spring Boot",
         "status": "TODO"
     },
     {
-        "task_id" : 3,
+        "task_task_id" : 3,
         "title": "Learn FastAPI",
         "status": "TODO"
     }
@@ -64,7 +66,7 @@ class TaskCreate(BaseModel):
     status:str
 
 class TaskResponse(BaseModel):
-    task_id: int
+    task_task_id: int
     title: str
     status: str
 
@@ -82,10 +84,10 @@ def get_tasks(status: str | None = None):
     return all_tasks
 
 
-@app.get("/api/v1/tasks/{task_id}",response_model=TaskResponse,status_code=status.HTTP_200_OK)
-def get_task(task_id:int):
+@app.get("/api/v1/tasks/{task_task_id}",response_model=TaskResponse,status_code=status.HTTP_200_OK)
+def get_task(task_task_id:int):
     for task in all_tasks:
-        if task["task_id"] == task_id:
+        if task["task_task_id"] == task_task_id:
             return task
     
     raise HTTPException(
@@ -94,9 +96,9 @@ def get_task(task_id:int):
     )
 
 Path parameter:
- /tasks/{task_id}
+ /tasks/{task_task_id}
           ↑
-      identifies resource
+      task_identifies resource
 
 Query parameter:
  /tasks?status=TODO
@@ -106,17 +108,17 @@ Query parameter:
 @app.post("/api/v1/tasks",response_model=TaskResponse,status_code=status.HTTP_201_CREATED)
 def create_task(task: TaskCreate):
     new_task = {
-        "task_id" : len(all_tasks) + 1,
+        "task_task_id" : len(all_tasks) + 1,
         "title": task.title,
         "status": task.status
     }
     all_tasks.append(new_task)
     return new_task
 
-@app.patch("/api/v1/tasks/{task_id}",response_model=TaskResponse,status_code=status.HTTP_200_OK)
-def update_task(task_id:int,task_update:TaskUpdate):
+@app.patch("/api/v1/tasks/{task_task_id}",response_model=TaskResponse,status_code=status.HTTP_200_OK)
+def update_task(task_task_id:int,task_update:TaskUpdate):
     for task in all_tasks:
-        if task["task_id"] == task_id:
+        if task["task_task_id"] == task_task_id:
             if task_update.title is not None:
                 task["title"] = task_update.title
 
@@ -130,16 +132,16 @@ def update_task(task_id:int,task_update:TaskUpdate):
         detail = "Task not found"
     ) 
 
-@app.delete("/api/v1/tasks/{task_id}",status_code=status.HTTP_204_NO_CONTENT)
-def delete_task(task_id:int):
+@app.delete("/api/v1/tasks/{task_task_id}",status_code=status.HTTP_204_NO_CONTENT)
+def delete_task(task_task_id:int):
     for task in all_tasks:
-        if task["task_id"] == task_id:
+        if task["task_task_id"] == task_task_id:
             all_tasks.remove(task)
             return
     #OR
     '''
     for index, task in enumerate(all_tasks):
-        if task["tasks_id"] == task_id:
+        if task["tasks_task_id"] == task_task_id:
             all_tasks.pop(index)
             return
     '''

@@ -84,9 +84,9 @@ dmypy.json
 # Cython debug output
 cython_debug/
 
-# IDEs and Editors
+# task_idEs and Editors
 .vscode/
-.idea/
+.task_idea/
 *.swp
 *.swo
 *~
