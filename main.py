@@ -1,10 +1,40 @@
 from fastapi import FastAPI
 from app.routers.tasks import router as task_router
+from app.db.base import Base
+from app.models.task import Task
+from app.db.database import engine
 
+Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 app.include_router(task_router)
 # include_router() is essentially telling FastAPI:These routes belong to this application; register them.
+
+'''
+Important
+
+create_all() is useful for learning, but we will not use it as our production migration strategy. Later we'll introduce Alembic for proper schema migrations.
+
+Task Python class
+       ↓
+SQLAlchemy ORM mapping
+       ↓
+Base.metadata
+       ↓
+SQLAlchemy Engine
+       ↓
+psycopg driver
+       ↓
+PostgreSQL
+       ↓
+tasks table
+'''
+
+
+
+
+
+
 """from fastapi import FastAPI,HTTPException,status
 from pydantic import BaseModel
 
