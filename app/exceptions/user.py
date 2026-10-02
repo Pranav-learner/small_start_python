@@ -9,3 +9,9 @@ class InvalidCredentials(Exception):
 class InvalidToken(Exception):
     pass
 
+class Forbidden(Exception):
+    pass
+
+
+class UserNotFound(Exception):
+    pass

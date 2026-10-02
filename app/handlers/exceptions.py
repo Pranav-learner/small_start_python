@@ -2,7 +2,13 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.exceptions.task import TaskNotFound, TaskForbidden
-from app.exceptions.user import UserAlreadyExists, InvalidCredentials, InvalidToken
+from app.exceptions.user import (
+    UserAlreadyExists,
+    InvalidCredentials,
+    InvalidToken,
+    Forbidden,
+    UserNotFound
+)
 
 
 def task_not_found_handler(
@@ -69,6 +75,25 @@ def invalid_token_handler(
         }
     )
 
+def forbidden_handler(request: Request, exc: Forbidden):
+    return JSONResponse(
+        status_code=403,
+        content={
+            "error": "FORBIDDEN",
+            "message": "You do not have permission to perform this action"
+        }
+    )
+
+
+def user_not_found_handler(request: Request, exc: UserNotFound):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "error": "USER_NOT_FOUND",
+            "message": "User not found"
+        }
+    )
+
 
 def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(TaskNotFound, task_not_found_handler)
@@ -76,3 +101,5 @@ def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(UserAlreadyExists, user_already_exists_handler)
     app.add_exception_handler(InvalidCredentials, invalid_credentials_handler)
     app.add_exception_handler(InvalidToken, invalid_token_handler)
+    app.add_exception_handler(Forbidden, forbidden_handler)
+    app.add_exception_handler(UserNotFound, user_not_found_handler)

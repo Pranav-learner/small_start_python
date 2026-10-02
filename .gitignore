@@ -1,3 +1,7 @@
+# ==============================================================================
+# Python .gitignore
+# ==============================================================================
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -30,11 +34,12 @@ MANIFEST
 *.manifest
 *.spec
 
-# Installer logs
+# Installer logs & Application logs
+*.log
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
+# Unit test, coverage & code analysis
 htmlcov/
 .tox/
 .nox/
@@ -47,18 +52,46 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.ruff_cache/
 cover/
 
 # Environments & Virtual Environments
 .env
 .env.*
 !.env.example
+!.env.template
 .venv/
 venv/
 ENV/
 env/
 env.bak/
 venv.bak/
+
+# Local databases & storage
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.sqlite3-journal
+*-wal
+*-shm
+
+# Security & Private keys (SSL / JWT / Certificates)
+*.pem
+*.key
+*.cert
+*.crt
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.code-workspace
+.project
+.pydevproject
+.settings/
 
 # Spyder project settings
 .spyderproject
@@ -67,30 +100,27 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
+# Documentation
 /site
 
-# mypy
+# Type checkers
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
-# Pyre type checker
 .pyre/
-
-# pytype static analyzer
 .pytype/
 
 # Cython debug output
 cython_debug/
 
-# task_idEs and Editors
-.vscode/
-.task_idea/
-*.swp
-*.swo
-*~
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
 
 # Operating System Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
