@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from app.services.task_service import TaskService, get_task_service
 from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
+from app.security.dependecies import get_current_user
 
 router = APIRouter()
 
@@ -10,8 +11,11 @@ def get_tasks(service: TaskService = Depends(get_task_service)):
 
 
 @router.get("/api/v1/tasks/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
-def get_task(task_id: int, service: TaskService = Depends(get_task_service)):
-    return service.get_task(task_id)
+def get_task(
+   task_id: int, 
+   current_user = Depends(get_current_user),
+   service: TaskService = Depends(get_task_service)):
+    return service.get_task(task_id,current_user.user_id)
 
 
 @router.post("/api/v1/tasks", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)

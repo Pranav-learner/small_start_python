@@ -14,10 +14,13 @@ class TaskService:
     def get_tasks(self) -> list[Task]:
         return self.repository.get_tasks()
 
-    def get_task(self, task_id: int) -> Task:
+    def get_task(self, task_id: int, user_id: int) -> Task:
         task = self.repository.get_task(task_id)
         if task is None:
             raise TaskNotFound()
+
+        if task.user_id != user_id:
+            raise TaskForbidden()
         return task
     
     def create_task(self, data: TaskCreate) -> Task:
