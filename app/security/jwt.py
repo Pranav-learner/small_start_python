@@ -1,11 +1,14 @@
 import jwt
 from datetime import datetime,timedelta,timezone
 
+from app.config import (
+    JWT_SECRET_KEY as SECRET_KEY,
+    JWT_ALGORITHM as ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_MINUTES as ACESS_TOEKN_EXPIRE_MINUTES,
+)
 from app.exceptions import InvalidToken
 
-SECRET_KEY = "small-start-python"
-ALGORITHM = "HS256"
-ACESS_TOEKN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = ACESS_TOEKN_EXPIRE_MINUTES
 
 def create_acess_toekn(user_id:int)-> str:
     expires_at= (
